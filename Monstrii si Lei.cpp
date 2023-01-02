@@ -2,16 +2,16 @@
 #include<fstream>
 #include<vector>
 #include<sstream>
-#include <cstdlib>
-#include <ctime>
-#include <string>
-#include<array>
+#include<cstdlib>
+#include<ctime>
+#include<string>
 
 using namespace std;
 
 //Functia de creeare a fisierului cu figuranti
-/*void figuranti()
+void figuranti()
 {
+    remove("Figuranti.csv");
     fstream f1;
 
     f1.open("Figuranti.csv", ios::out | ios::app);
@@ -24,10 +24,12 @@ using namespace std;
     for(int i = 1; i <= 132; i++)
     f1<<i<<","<<Nume[rand() % 152]<<" "<<Prenume[rand() % 137]<<","<<"extra"<<"\n";
     f1.close();
-}*/
+}
 
 int main()
 {
     figuranti();
+
+
     return 0;
 }
