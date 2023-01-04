@@ -5,50 +5,21 @@
 #include<cstdlib>
 #include<ctime>
 #include<string>
-
 using namespace std;
 
-class Production
+template <typename T>
+T produs(T a, T b)
 {
-private:
-    int NrMachiaj, NrTipMancare;
+    return a * b;
+}
 
-public:
-
-    //Constructori - Destructori
-    Production() {}
-    ~Production() {};
-
-    //Incapsulare
-    void setNrMachiaj(int NrMachiaj)
-    {
-        this->NrMachiaj = NrMachiaj;
-    }
-
-    void setNrTipMancare(int NrTipMancare)
-    {
-        this->NrTipMancare = NrTipMancare;
-    }
-
-    int getNrMachiaj()
-    {
-        return NrMachiaj;
-    }
-
-    int getNrTipMancare(int NrTipMancare)
-    {
-        return NrTipMancare;
-    }
-    //
-};
-
-class Cast: public Production
+class Cast
 {
-public:
-
+protected:
     string Machiaj[5] = {"Vampiri","Varcolaci","Sirene","Clarvazatori","Om"};
     string Mancare[3] = {"Omnivora","Vegetariana","Flexitariana"};
-    int nrVampiri = 0, nrVarcolaci = 0, nrSirene = 0, nrClarvazatori = 0, nrOameni = 0, nrOmnivori = 0, nrVegetarieni = 0, nrFlexitarieni = 0;
+    static int nrVampiri , nrVarcolaci , nrSirene , nrClarvazatori , nrOameni , nrOmnivori, nrVegetarieni , nrFlexitarieni , i , j , nrCamere3 , nrCamere2 ;
+public:
 
     void NrCostume()
     {
@@ -109,10 +80,106 @@ public:
             else if(mancare == "Flexitariana")
                 nrFlexitarieni++;
         }
+        fin.close();
+    }
+
+    void NrCamere()
+    {
+        fstream fin;
+        fin.open("FullCastWednesday.csv", ios::in);
+
+        vector<string> row;
+        string line, word, temp;
+
+        while(getline(fin, line))
+        {
+            row.clear();
+            stringstream s(line);
+            while (getline(s, word, ','))
+            {
+                row.push_back(word);
+            }
+
+            if(row[1] == "extra")
+                i++;
+            else if(row[1] != "extra")
+                j++;
+        }
+        if(i%3 == 0)
+            nrCamere3 = i/3;
+        else
+            nrCamere3 = (i-1)/3 + 1;
+
+        if(j % 2 == 0)
+            nrCamere2 = i/2;
+        else nrCamere2 = (i-1)/2 + 1;
 
         fin.close();
     }
 
+    void LitriiBautura();
+};
+
+int Cast::nrVampiri = 0;
+int Cast::nrVarcolaci = 0;
+int Cast::nrSirene = 0;
+int Cast::nrClarvazatori = 0;
+int Cast::nrOameni = 0;
+int Cast::nrOmnivori = 0;
+int Cast::nrVegetarieni = 0;
+int Cast::nrFlexitarieni = 0;
+int Cast::nrCamere2 = 0;
+int Cast::nrCamere3 = 0;
+int Cast::i = 0;
+int Cast::j = 0;
+
+class Cost: public Cast
+{
+private:
+    int pretOmnivor, pretVegetarian, pretFlexitarian;
+    int sumaMancare;
+
+public:
+    Cost() {};
+    ~Cost() {};
+    NrTipMancare();
+
+    //setters
+    void setPretOmnivor(int pretOmnivor)
+    {
+        this -> pretOmnivor = pretOmnivor;
+    }
+
+    void setPretVegetarian(int pretVegetarian)
+    {
+        this -> pretVegetarian = pretVegetarian;
+    }
+
+    void setPretFlexitarian(int pretFlexitarian)
+    {
+        this-> pretFlexitarian = pretFlexitarian;
+    }
+
+    //getters
+    int getPretOmnivor()
+    {
+        return this->pretOmnivor;
+    }
+
+    int getPretVegetarian()
+    {
+        return this->pretVegetarian;
+    }
+
+    int  getPretFlexitarian()
+    {
+        return this->pretFlexitarian;
+    }
+
+    void SumaMancare()
+    {
+        sumaMancare = produs(pretOmnivor,nrOmnivori) + produs(pretVegetarian,nrVegetarieni) + produs(pretFlexitarian,nrFlexitarieni);
+    }
 };
 
 //Functia de creeare a fisierului cu figuranti
@@ -187,7 +254,7 @@ void Meniu()
     f1<<"Fel principal"<<","<<roFelPrincipalOmnivor[rand() % 6]<<","<<roFelPrincipalVegetarian[rand() % 7]<<","<<roFelPrincipalFlexitarian[rand() %7]<<"\n";
     f1<<"Desert"<<","<<roDesertOmnivor[rand() % 12]<<","<<roDesertVegetarian[rand() % 7]<<","<<roDesertFlexitarian[rand() % 7];
 
-    string enSupaCiorbaOmnivor[11] = {"Chicken soup with noodles and dumplings", "Chicken soup with noodles", "Perisoare soup", "Belly soup", "Radauteana soup", "Beef soup", "Bean soup with smoked fennel" , "Greek chicken soup", "Bone and pork borscht", "Transylvanian smoked potato soup", "Clear bone soup and beef gravy"};
+    string enSupaCiorbaOmnivor[11] = {"Chicken soup with noodles and dumplings", "Chicken soup with noodles", "Perisoare soup", "Belly soup", "Radauteana soup", "Beef soup", "Bean soup with smoked fennel", "Greek chicken soup", "Bone and pork borscht", "Transylvanian smoked potato soup", "Clear bone soup and beef gravy"};
     string enSupaCiorbaVegetarian[7] = {"Lentil soup", "Vegetable cream soup", "Doughnut soup", "Noodle soup", "Noodle soup", "Cream of roasted peppers", "Bean soup"};
     string enSupaCiorbaFlexitarian[6] = {"Catfish soup", "Mackerel fish soup", "Salmon fish soup", "Carp fish soup", "Moldovan fish bream", "Fish soup"};
 
@@ -219,11 +286,16 @@ int main()
     //Functie de creeare a meniului
     Meniu();
 
-    Production Wednesday;
-    Wednesday.setNrMachiaj(5);
-    Wednesday.setNrTipMancare(3);
     Cast cast;
     cast.NrCostume();
     cast.NrTipMancare();
+    cast.NrCamere();
+
+    Cost costul;
+    costul.setPretOmnivor(40);
+    costul.setPretVegetarian(33);
+    costul.setPretFlexitarian(46);
+    costul.SumaMancare();
+
     return 0;
 }
