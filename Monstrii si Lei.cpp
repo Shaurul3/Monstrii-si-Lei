@@ -13,13 +13,30 @@ T produs(T a, T b)
     return a * b;
 }
 
-class Cast
+class Production
+{
+public:
+
+    virtual void NrCostume() = 0;
+    virtual void NrTipMancare() = 0;
+    virtual void NrCamere() = 0;
+    virtual void LitriiBautura() = 0;
+    virtual void NrAutocare() = 0;
+};
+
+
+class Cast: public Production
 {
 protected:
     string Machiaj[5] = {"Vampiri","Varcolaci","Sirene","Clarvazatori","Om"};
     string Mancare[3] = {"Omnivora","Vegetariana","Flexitariana"};
-    static int nrVampiri , nrVarcolaci , nrSirene , nrClarvazatori , nrOameni , nrOmnivori, nrVegetarieni , nrFlexitarieni , i , j , nrCamere3 , nrCamere2 ;
+    static int nrVampiri, nrVarcolaci, nrSirene, nrClarvazatori, nrOameni, nrOmnivori, nrVegetarieni, nrFlexitarieni, i, j, nrCamere3, nrCamere2, nrPersoane, LitriiApa, nrAutocare;
+    static float LitriiSuc, LitriiCafea;
+    int trei = 3, doi = 2;
 public:
+
+    Cast() {};
+    ~Cast() {};
 
     void NrCostume()
     {
@@ -105,19 +122,56 @@ public:
             else if(row[1] != "extra")
                 j++;
         }
-        if(i%3 == 0)
-            nrCamere3 = i/3;
-        else
-            nrCamere3 = (i-1)/3 + 1;
 
-        if(j % 2 == 0)
-            nrCamere2 = i/2;
-        else nrCamere2 = (i-1)/2 + 1;
+        try
+        {
+            if(trei == 0)
+            {
+                throw "Impartire cu 0";
+            }
+            if(i%trei == 0)
+                nrCamere3 = i/trei;
+            else
+                nrCamere3 = (i-1)/trei + 1;
+        }
+        catch(const char* msg)
+        {
+            cerr<<msg;
+        }
+
+        try
+        {
+            if(doi == 0)
+            {
+                throw "Impartire cu 0";
+            }
+            if(j % doi == 0)
+                nrCamere2 = j/doi;
+            else nrCamere2 = (j-1)/doi + 1;
+        }
+        catch(const char* msg)
+        {
+            cerr<<msg;
+        }
 
         fin.close();
     }
 
-    void LitriiBautura();
+    void LitriiBautura()
+    {
+        nrPersoane = i + j;
+        LitriiApa = nrPersoane * 1;
+        LitriiCafea = nrPersoane * 0.5;
+        LitriiSuc = nrPersoane * 0.8;
+    }
+
+    void NrAutocare()
+    {
+        if(nrPersoane % 50 == 0)
+            nrAutocare = nrPersoane / 50;
+        else
+            nrAutocare = (nrPersoane - (nrPersoane % 50))/50 + 1;
+    }
 };
 
 int Cast::nrVampiri = 0;
@@ -132,18 +186,29 @@ int Cast::nrCamere2 = 0;
 int Cast::nrCamere3 = 0;
 int Cast::i = 0;
 int Cast::j = 0;
+int Cast::nrPersoane = 0;
+int Cast::LitriiApa = 0;
+float Cast::LitriiCafea = 0;
+float Cast::LitriiSuc = 0;
+int Cast::nrAutocare = 0;
 
 class Cost: public Cast
 {
 private:
     int pretOmnivor, pretVegetarian, pretFlexitarian;
-    int sumaMancare;
+    int pretApa, pretCafea, pretSuc;
+    int sumaMancare, sumaCostume, sumaCazare, sumaTransport;
+    float sumaBautura, sumaMancareBautura;
+    int inchiriere = 10000;
+    int PretAutocar;
 
 public:
-    Cost() {};
+    Cost(int PretAutocar)
+    {
+        this -> PretAutocar = PretAutocar;
+        sumaTransport = produs(2,produs(nrAutocare,PretAutocar));
+    };
     ~Cost() {};
-    NrTipMancare();
-
     //setters
     void setPretOmnivor(int pretOmnivor)
     {
@@ -158,6 +223,21 @@ public:
     void setPretFlexitarian(int pretFlexitarian)
     {
         this-> pretFlexitarian = pretFlexitarian;
+    }
+
+    void setPretApa(int pretApa)
+    {
+        this-> pretApa = pretApa;
+    }
+
+    void setPretCafea(int pretCafea)
+    {
+        this-> pretCafea = pretCafea;
+    }
+
+    void setPretSuc(int pretSuc)
+    {
+        this-> pretSuc = pretSuc;
     }
 
     //getters
@@ -176,9 +256,64 @@ public:
         return this->pretFlexitarian;
     }
 
-    void SumaMancare()
+    int  getPretApa()
+    {
+        return this->pretApa;
+    }
+
+    int  getPretCafea()
+    {
+        return this->pretCafea;
+    }
+
+    int  getPretSuc()
+    {
+        return this->pretSuc;
+    }
+
+    void SumaMancareBautura()
     {
         sumaMancare = produs(pretOmnivor,nrOmnivori) + produs(pretVegetarian,nrVegetarieni) + produs(pretFlexitarian,nrFlexitarieni);
+        sumaBautura = produs((pretApa/2),LitriiApa) + produs((float)pretCafea,LitriiCafea) + produs((float)(pretSuc/2), LitriiSuc);
+        sumaMancareBautura = sumaMancare + sumaBautura;
+    }
+
+    void Suma(int CostVampir, int CostVarcolac, int CostSirena, int CostClarvazator, int CostOm)
+    {
+        sumaCostume = produs(CostVampir,nrVampiri) + produs(CostVarcolac,nrVarcolaci) + produs(CostSirena,nrSirene) + produs(CostClarvazator,nrClarvazatori) + produs(CostOm,nrOameni);
+    }
+
+    void Suma(int PretCamera2, int PretCamera3)
+    {
+        sumaCazare = produs(PretCamera2,nrCamere2) + produs(PretCamera3,nrCamere3);
+    }
+
+    void DocumentCost()
+    {
+        fstream f1, f2;
+
+        remove("Cost [ro].csv");
+        remove("Cost [en].csv");
+
+        f1.open("Cost [ro].csv", ios::out | ios::app);
+        f2.open("Cost [en].csv", ios::out | ios::app);
+
+        //1 dolar = 4.64 lei
+
+        f1<<"Zile"<<","<<"Transport"<<","<<"Cazare"<<","<<"Machiaj"<<","<<"Mancare si apa"<<","<<"Inchiriere spatiu"<<","<<"Total"<<"\n";
+        f1<<"30"<<","<<(30 * (float)sumaTransport)/4.64<<","<<(30 * (float)sumaCazare)/4.64<<","<<(30 * (float)sumaCostume)/4.64<<","<<(30 * sumaMancareBautura)/4.64<<","<<(30 * (float)(inchiriere - (float)inchiriere*6/100))/4.64<<","<<(30 * (float)sumaTransport)/4.64 + (30 * (float)sumaCazare)/4.64 + (30 * (float)sumaCostume)/4.64 + (30 * sumaMancareBautura)/4.64 + (30 * (float)(inchiriere - (float)inchiriere*6/100))/4.64<<"\n";
+        f1<<"45"<<","<<(45 * (float)sumaTransport)/4.64<<","<<(45 * (float)sumaCazare)/4.64<<","<<(45 * (float)sumaCostume)/4.64<<","<<(45 * sumaMancareBautura)/4.64<<","<<(45 * (float)(inchiriere - (float)inchiriere*8/100))/4.64<<","<<(45 * (float)sumaTransport)/4.64 + (45 * (float)sumaCazare)/4.64 + (45 * (float)sumaCostume)/4.64 + (45 * sumaMancareBautura)/4.64 + (45 * (float)(inchiriere - (float)inchiriere*6/100))/4.64<<"\n";
+        f1<<"60"<<","<<(60 * (float)sumaTransport)/4.64<<","<<(60 * (float)sumaCazare)/4.64<<","<<(60 * (float)sumaCostume)/4.64<<","<<(60 * sumaMancareBautura)/4.64<<","<<(60 * (float)(inchiriere - (float)inchiriere*12/100))/4.64<<","<<(60 * (float)sumaTransport)/4.64 + (60 * (float)sumaCazare)/4.64 + (60 * (float)sumaCostume)/4.64 + (60 * sumaMancareBautura)/4.64 + (60 * (float)(inchiriere - (float)inchiriere*6/100))/4.64<<"\n";
+        f1<<"100"<<","<<(100 * (float)sumaTransport)/4.64<<","<<(1000 * (float)sumaCazare)/4.64<<","<<(100 * (float)sumaCostume)/4.64<<","<<(100 * sumaMancareBautura)/4.64<<","<<(100 * (float)(inchiriere - (float)inchiriere*20/100))<<","<<(100 * (float)sumaTransport)/4.64 + (100 * (float)sumaCazare)/4.64 + (100 * (float)sumaCostume)/4.64 + (100 * sumaMancareBautura)/4.64 + (100 * (float)(inchiriere - (float)inchiriere*6/100))/4.64<<"\n";
+
+        f2<<"Days"<<","<<"Transport"<<","<<"Hotel"<<","<<"Makeup"<<","<<"Food"<<","<<"Rent"<<","<<"Total"<<"\n";
+        f2<<"30"<<","<<(30 * (float)sumaTransport)/4.64<<","<<(30 * (float)sumaCazare)/4.64<<","<<(30 * (float)sumaCostume)/4.64<<","<<(30 * sumaMancareBautura)/4.64<<","<<(30 * (float)(inchiriere - (float)inchiriere*6/100))/4.64<<","<<(30 * (float)sumaTransport)/4.64 + (30 * (float)sumaCazare)/4.64 + (30 * (float)sumaCostume)/4.64 + (30 * sumaMancareBautura)/4.64 + (30 * (float)(inchiriere - (float)inchiriere*6/100))/4.64<<"\n";
+        f2<<"45"<<","<<(45 * (float)sumaTransport)/4.64<<","<<(45 * (float)sumaCazare)/4.64<<","<<(45 * (float)sumaCostume)/4.64<<","<<(45 * sumaMancareBautura)/4.64<<","<<(45 * (float)(inchiriere - (float)inchiriere*8/100))/4.64<<","<<(45 * (float)sumaTransport)/4.64 + (45 * (float)sumaCazare)/4.64 + (45 * (float)sumaCostume)/4.64 + (45 * sumaMancareBautura)/4.64 + (45 * (float)(inchiriere - (float)inchiriere*6/100))/4.64<<"\n";
+        f2<<"60"<<","<<(60 * (float)sumaTransport)/4.64<<","<<(60 * (float)sumaCazare)/4.64<<","<<(60 * (float)sumaCostume)/4.64<<","<<(60 * sumaMancareBautura)/4.64<<","<<(60 * (float)(inchiriere - (float)inchiriere*12/100))/4.64<<","<<(60 * (float)sumaTransport)/4.64 + (60 * (float)sumaCazare)/4.64 + (60 * (float)sumaCostume)/4.64 + (60 * sumaMancareBautura)/4.64 + (60 * (float)(inchiriere - (float)inchiriere*6/100))/4.64<<"\n";
+        f2<<"100"<<","<<(100 * (float)sumaTransport)/4.64<<","<<(1000 * (float)sumaCazare)/4.64<<","<<(100 * (float)sumaCostume)/4.64<<","<<(100 * sumaMancareBautura)/4.64<<","<<(100 * (float)(inchiriere - (float)inchiriere*20/100))<<","<<(100 * (float)sumaTransport)/4.64 + (100 * (float)sumaCazare)/4.64 + (100 * (float)sumaCostume)/4.64 + (100 * sumaMancareBautura)/4.64 + (100 * (float)(inchiriere - (float)inchiriere*6/100))/4.64<<"\n";
+
+        f1.close();
+        f2.close();
     }
 };
 
@@ -290,12 +425,20 @@ int main()
     cast.NrCostume();
     cast.NrTipMancare();
     cast.NrCamere();
+    cast.LitriiBautura();
+    cast.NrAutocare();
 
-    Cost costul;
+    Cost costul(5680);
     costul.setPretOmnivor(40);
     costul.setPretVegetarian(33);
     costul.setPretFlexitarian(46);
-    costul.SumaMancare();
+    costul.setPretApa(6);
+    costul.setPretCafea(30);
+    costul.setPretSuc(8);
+    costul.SumaMancareBautura();
+    costul.Suma(230,555,345,157,55);
+    costul.Suma(350,420);
+    costul.DocumentCost();
 
     return 0;
 }
