@@ -35,8 +35,8 @@ protected:
     int trei = 3, doi = 2;
 public:
 
-    Cast() {};
-    ~Cast() {};
+    Cast(){};
+    ~Cast(){};
 
     void NrCostume()
     {
@@ -194,21 +194,21 @@ int Cast::nrAutocare = 0;
 
 class Cost: public Cast
 {
-private:
+protected:
     int pretOmnivor, pretVegetarian, pretFlexitarian;
     int pretApa, pretCafea, pretSuc;
     int sumaMancare, sumaCostume, sumaCazare, sumaTransport;
     float sumaBautura, sumaMancareBautura;
     int inchiriere = 10000;
-    int PretAutocar;
+    int pretAutocar;
 
 public:
     Cost(int PretAutocar)
     {
-        this -> PretAutocar = PretAutocar;
+        pretAutocar = PretAutocar;
         sumaTransport = produs(2,produs(nrAutocare,PretAutocar));
     };
-    ~Cost() {};
+    ~Cost(){};
     //setters
     void setPretOmnivor(int pretOmnivor)
     {
@@ -377,7 +377,7 @@ void Meniu()
     string roSupaCiorbaFlexitarian[6] = {"Ciorba de peste cu somn", "Ciorba de peste cu macrou", "Ciorba de peste cu somon", "Ciorba de peste cu crap", "Bors de peste moldovenesc", "Ciorba de peste"};
 
     string roFelPrincipalOmnivor[6] = {"Piept de rata in sos de rodii", "Tocanita de vita cu ciuperci", "Sandwich cu chiftele in stil american", "Chiftele keto", "Tochitura de porc", "Pomana porcului"};
-    string roFelPrincipalVegetarian[7] = {"Pancakes cu spanac", "Kimchi – varza murata picanta", "Sarmale cu orez", "Falafel", "Seitan - carne vegetariana", "Paste suedeze", "Vinete umplute cu ciuperci"};
+    string roFelPrincipalVegetarian[7] = {"Pancakes cu spanac", "Kimchi - varza murata picanta", "Sarmale cu orez", "Falafel", "Seitan - carne vegetariana", "Paste suedeze", "Vinete umplute cu ciuperci"};
     string roFelPrincipalFlexitarian[7] = {"Calcan cu legume si lamaie", "Macrou la cuptor", "Peste la gratar cu mirodenii", "Peste cu legume", "Peste cu orez","Peste cu migdale", "Peste cu parmezan, lamaie si plante aromatice"};
 
     string roDesertOmnivor[12] = {"Clatite", "Gris cu lapte", "Cozonac", "Tiramisu", "Papanasi", "Gogosi", "Amadina", "Coltunasi", "Lapte de pasare", "Inghetata", "Strudel", "Orez cu lapte"};
