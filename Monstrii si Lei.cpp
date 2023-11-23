@@ -32,10 +32,14 @@ protected:
     string Mancare[3] = {"Omnivora","Vegetariana","Flexitariana"};
     static int nrVampiri, nrVarcolaci, nrSirene, nrClarvazatori, nrOameni, nrOmnivori, nrVegetarieni, nrFlexitarieni, i, j, nrCamere3, nrCamere2, nrPersoane, LitriiApa, nrAutocare;
     static float LitriiSuc, LitriiCafea;
-    int trei = 3, doi = 2;
+    int trei, doi;
 public:
 
-    Cast(){};
+    Cast(int Trei,int Doi)
+    {
+        trei = Trei;
+        doi = Doi;
+    };
     ~Cast(){};
 
     void NrCostume()
@@ -194,16 +198,18 @@ int Cast::nrAutocare = 0;
 
 class Cost: public Cast
 {
-protected:
+private:
     int pretOmnivor, pretVegetarian, pretFlexitarian;
     int pretApa, pretCafea, pretSuc;
+
+protected:
     int sumaMancare, sumaCostume, sumaCazare, sumaTransport;
     float sumaBautura, sumaMancareBautura;
     int inchiriere = 10000;
     int pretAutocar;
 
 public:
-    Cost(int PretAutocar)
+    Cost(int PretAutocar): Cast{trei, doi}
     {
         pretAutocar = PretAutocar;
         sumaTransport = produs(2,produs(nrAutocare,PretAutocar));
@@ -421,7 +427,7 @@ int main()
     //Functie de creeare a meniului
     Meniu();
 
-    Cast cast;
+    Cast cast(3,2);
     cast.NrCostume();
     cast.NrTipMancare();
     cast.NrCamere();
